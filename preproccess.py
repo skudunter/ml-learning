@@ -1,47 +1,26 @@
 import pandas as pd
 import warnings
-import seaborn as sns
-import matplotlib.pyplot as plt
-import numpy as np
+from sklearn.preprocessing import Normalizer,OneHotEncoder
+from sklearn.model_selection import train_test_split
 warnings.filterwarnings('ignore')
 
+# read data
 data = pd.read_csv('training_data.csv')
 data = data.drop(['Unnamed: 0'], axis=1)
 
 categorical_data = data.select_dtypes(include=['object']).columns.tolist()
 numerical_data = data.select_dtypes(include=['int64', 'float64']).columns.tolist()
 
+# one-hot encoding
+encoder = OneHotEncoder(sparse_output=False)
+one_hot_encoded = pd.DataFrame(encoder.fit_transform(data[categorical_data]), columns=encoder.get_feature_names_out(categorical_data))
+data_encoded = pd.concat([data[numerical_data], one_hot_encoded], axis=1)
 
-def outliers(column):
-    Q1 = data[column].quantile(0.25)
-    Q3 = data[column].quantile(0.75)
-    IQR = Q3 - Q1
-    lower_bound = Q1 - 1.5 * IQR
-    upper_bound = Q3 + 1.5 * IQR
-    return data[(data[column] < lower_bound) | (data[column] > upper_bound)]
+# normalization
+scaler = Normalizer()
+scaled_data = scaler.fit_transform(data_encoded)
+data_encoded_normalised = pd.DataFrame(scaled_data, columns=data_encoded.columns)
 
-
-# change binary category data to numerical
-data['y'] = data['y'].map({'yes': 1, 'no': 0})
-data['default'] = data['default'].map({'yes': 1, 'no': 0})
-data['housing'] = data['housing'].map({'yes': 1, 'no': 0})
-data['loan'] = data['loan'].map({'yes': 1, 'no': 0})
-
-# use one-hot to make the data machine readable
-jobs = ['management', 'technician', 'entrepreneur', 'blue-collar', 'unknown', 'retired',
-        'admin.', 'services', 'self-employed', 'unemployed', 'housemaid', 'student']
-married = ['single', 'divorced']
-education = ['tertiary', 'secondary', 'unknown', 'primary']
+data_encoded_normalised.to_csv('training_data_preprocessed.csv', index=False)
 
 
-def onehot(x, options):
-    template = [0 for _ in range(len(options))]
-    template[options.index(x)] = 1
-    return template
-
-
-# inputs = [0.5, 0.1, 0.3, 1, 0]
-# print(f"Data Before Adding Job one-hot: {inputs}")
-# job = 'technician'
-# inputs.extend(onehot(job, jobs))
-# print(f"Data After Adding Job one-hot: {inputs}")
