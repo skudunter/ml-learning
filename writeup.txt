@@ -1,0 +1,10 @@
+should I drop outliers?
+should I standardize data to have a mean of 0 and std of 1?
+should I do feature engineering like checking if the day is a weekday or weekend?
+should I create a heatmap and then evaluate that data and remove data with low correlation coeffeciensts?
+Logistic Regression, Random Forest, Gradient Boosting
+target variable encoding
+1. {0,1} replacement for boolean values
+2. used onehot to change objects to numbers and 
+3. run normalisation on the data set
+4. use 70% to train, 20% for hyperparameter , 10% to validate
