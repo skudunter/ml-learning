@@ -6,6 +6,12 @@ should I create a heatmap and then evaluate that data and remove data with low c
 Logistic Regression, Random Forest, Gradient Boosting
 target variable encoding
 
-1. onehot for all categorical values
-2. normalise
-4. use 90% to train, 10% to validate
+Remove columns to reduce dummy variable trap
+Linearity relationship between independent variables and log odds: 
+The relationship between the independent variables and the log odds of the dependent variable should be linear.
+remove outliers
+
+SMOTE
+onehot for all categorical values
+robust-scaling
+use 80% to train, 20% to validate
